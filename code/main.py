@@ -5,7 +5,7 @@ from pytmx.util_pygame import load_pygame
 from settings import *
 from sprite import Sprite
 from player import Player
-from game_management import GameManage
+from game_manage import GameManage,FileManage
 
 class Game:
     def __init__(self):
@@ -27,18 +27,19 @@ class Game:
         self.ground_group = pygame.sprite.Group()
         self.player_group = pygame.sprite.GroupSingle()
 
+        # Save/load manage
+
+        self.data = FileManage().load_game('../save/data.json')
+
+
+        self.game_manage = GameManage(self.display_surface, self.data)
+
         # Init other classes
-        self.player = Player(self.player_group)
+        self.player = Player((self.data["player_position"]),self.player_group)
 
 
         self.setup()
 
-        self.data = {
-            "player_position": (self.player.pos.x,self.player.pos.y)
-        }
-
-
-        self.game_manage = GameManage(self.display_surface, self.data)
 
 
 
@@ -69,7 +70,7 @@ class Game:
 
                 # update
                 self.player_group.update(self.dt)
-                self.game_manage.update(self.state)
+                self.game_manage.update(self.state, self.player)
 
 
             elif self.state['menu_game']:
@@ -78,7 +79,7 @@ class Game:
                 self.display_surface.fill('black')
 
                 # update
-                self.game_manage.update(self.state)
+                self.game_manage.update(self.state, self.player)
 
 
             elif self.state['pause_game']:
@@ -87,7 +88,7 @@ class Game:
                 self.display_surface.fill('black')
 
                 # update
-                self.game_manage.update(self.state)
+                self.game_manage.update(self.state, self.player)
 
 
             pygame.display.update()

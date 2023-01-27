@@ -2,46 +2,9 @@ import sys
 import json
 import pygame
 
-class Button:
-    def __init__(self,display,pos,text):
-        self.display_surface = display
-        self.font = pygame.font.SysFont('Calibri', 60)
+from create_button import CreateButton
+from file_manage import FileManage
 
-        self.button = pygame.Surface((400, 80), pygame.SRCALPHA)
-        self.button_rect = self.button.get_rect(topleft=pos)
-
-        self.button_text = self.font.render(text, True, 'white')
-        self.button_text_rect = self.button_text.get_rect(midleft=(
-            self.button_rect.left + 20,
-            self.button_rect.centery
-        ))
-
-
-    def draw_rect_alpha(self, color, rect):
-        surface = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
-        pygame.draw.rect(surface, color, surface.get_rect(), border_radius=10)
-        self.display_surface.blit(surface, rect)
-
-    def draw(self):
-        self.display_surface.blit(self.button, self.button_rect)
-        if self.button_rect.collidepoint(pygame.mouse.get_pos()):
-            self.draw_rect_alpha((65, 185, 245, 80), self.button_rect)
-        self.display_surface.blit(self.button_text, self.button_text_rect)
-
-class FileManage:
-    def __init__(self):
-        pass
-
-    def save_game(self, data, filename):
-        with open(filename, 'w') as file:
-            json.dump(data, file)
-        print('Save data ...')
-
-    def load_game(self, filename):
-        with open(filename, 'r') as file:
-            data = json.load(file)
-        print('Load data ...')
-        return data
 
 class GameManage:
     def __init__(self,display_surf,data):
@@ -49,38 +12,31 @@ class GameManage:
 
         # Graphics object
 
-        # text for buttons
-        self.font = pygame.font.SysFont('Calibri', 60)
-
         # menu buttons
         self.menu_level = 1
 
-        self.menu_play_button = Button(self.display_surface, (100, 200), 'Play')
+        self.menu_play_button = CreateButton(self.display_surface, (100, 200), 'Play')
 
-        self.menu_settings_button = Button(self.display_surface, (100, 300), 'Settings')
+        self.menu_settings_button = CreateButton(self.display_surface, (100, 300), 'Settings')
 
-        self.menu_quit_button = Button(self.display_surface, (100, 400), 'Quit')
-
+        self.menu_quit_button = CreateButton(self.display_surface, (100, 400), 'Quit')
 
 
 
         # pause buttons
-        self.pause_resume_button = Button(self.display_surface, (100, 200), 'Resume')
+        self.pause_resume_button = CreateButton(self.display_surface, (100, 200), 'Resume')
 
-        self.pause_save_button = Button(self.display_surface, (100,300), 'Save')
+        self.pause_save_button = CreateButton(self.display_surface, (100, 300), 'Save')
 
-        self.pause_exit_button = Button(self.display_surface, (100,400), 'Exit')
+        self.pause_exit_button = CreateButton(self.display_surface, (100, 400), 'Exit')
 
-
-
-        # Timer button
+        # Cooldown click button
         self.last_click_time = 0
         self.cooldown_click = 400
 
         # Save/load manage
         self.file = FileManage()
         self.data = data
-
 
     def click_button(self, button_rect):
         current_click_time = pygame.time.get_ticks()
@@ -100,7 +56,6 @@ class GameManage:
             game_state['menu_game'] = False
             game_state['running_game'] = True
             game_state['pause_game'] = False
-
 
 
     def menu_quit(self, game_state) :
@@ -128,19 +83,20 @@ class GameManage:
 
     def pause_save(self):
         if self.click_button(self.pause_save_button.button_rect):
-            self.file.save_game(self.data, '../data/data.json')
+            self.file.save_game(self.data, '../save/data.json')
 
     def pause_quit(self, game_state) :
         if self.click_button(self.pause_exit_button.button_rect):
             game_state['menu_game'] = True
             game_state['running_game'] = False
             game_state['pause_game'] = False
+            self.file.save_game(self.data, '../save/data.json')
 
 
 
     # Update state and draw buttons
 
-    def update(self,game_state):
+    def update(self,game_state, player):
         if game_state['menu_game']:
 
             self.menu_play_button.draw()
@@ -150,6 +106,7 @@ class GameManage:
 
             self.menu_play(game_state)
             self.menu_quit(game_state)
+
 
         if game_state['pause_game']:
             self.pause_resume_button.draw()
@@ -161,5 +118,8 @@ class GameManage:
             self.pause_save()
             self.pause_quit(game_state)
 
+
         if game_state['running_game']:
             self.game_pause(game_state)
+
+            self.data['player_position'] = [player.pos.x, player.pos.y]

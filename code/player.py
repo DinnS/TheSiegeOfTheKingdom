@@ -4,11 +4,11 @@ from pygame.math import Vector2
 from settings import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self,groups):
+    def __init__(self, pos, groups):
         super().__init__(groups)
         self.image = pygame.Surface((64,64))
         self.image.fill('red')
-        self.rect = self.image.get_rect(center = (WINDOW_WIDTH / 2,WINDOW_HEIGHT / 2))
+        self.rect = self.image.get_rect(center = (pos[0],pos[1]))
 
         # movement
         self.pos = Vector2(self.rect.center)
