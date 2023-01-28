@@ -2,7 +2,7 @@ import sys
 import pygame
 from pytmx.util_pygame import load_pygame
 
-from settings import *
+from settings import Settings
 from sprite import Sprite
 from player import Player
 from game_manage import GameManage,FileManage
@@ -11,7 +11,12 @@ class Game:
     def __init__(self):
         # base game
         pygame.init()
-        self.display_surface = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
+        self.settings = Settings()
+        if self.settings.full_screen:
+            self.display_surface = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+        else:
+            self.display_surface = pygame.display.set_mode((self.settings.window_width, self.settings.window_height))
+
         pygame.display.set_caption('The Siege of the Kingdom')
         self.clock = pygame.time.Clock()
 
@@ -28,10 +33,9 @@ class Game:
         self.player_group = pygame.sprite.GroupSingle()
 
         # Save/load manage
+        self.data = FileManage().load_file('../save/data.json')
 
-        self.data = FileManage().load_game('../save/data.json')
-
-
+        # Manage states a game and manage all buttons in menu and pause
         self.game_manage = GameManage(self.display_surface, self.data)
 
         # Init other classes
@@ -41,9 +45,9 @@ class Game:
         self.setup()
 
 
-
-
+    # create map
     def setup(self):
+
         tmx_map = load_pygame('../data/map.tmx')
 
         # tiles
@@ -74,13 +78,11 @@ class Game:
 
 
             elif self.state['menu_game']:
-
                 # draw
                 self.display_surface.fill('black')
 
                 # update
                 self.game_manage.update(self.state, self.player)
-
 
             elif self.state['pause_game']:
 
