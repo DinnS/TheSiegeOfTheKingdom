@@ -1,11 +1,13 @@
 import pygame
-
+from settings import Settings
 class CreateButton:
     def __init__(self,display,pos,text):
         self.display_surface = display
-        self.font = pygame.font.SysFont('Calibri', 60)
+        self.settings = Settings()
+        self.settings.set_scale_display()
+        self.font = pygame.font.SysFont('Calibri', int((42 * self.settings.width_scale) + (42 * self.settings.height_scale) / 4) )
 
-        self.button = pygame.Surface((400, 80), pygame.SRCALPHA)
+        self.button = pygame.Surface((400 * self.settings.width_scale, 80 * self.settings.height_scale), pygame.SRCALPHA)
         self.button_rect = self.button.get_rect(topleft=pos)
 
         self.button_text = self.font.render(text, True, 'white')

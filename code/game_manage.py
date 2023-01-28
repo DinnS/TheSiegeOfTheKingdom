@@ -11,6 +11,8 @@ from notification import Notification
 class GameManage:
     def __init__(self,display_surf,data):
         self.display_surface = display_surf
+        self.settings = Settings()
+        self.settings.set_scale_display()
 
         self.menu_current_option = 'main'
 
@@ -19,24 +21,24 @@ class GameManage:
         # menu buttons
         self.menu_level = 1
 
-        self.menu_play_button = CreateButton(self.display_surface, (100, 200), 'Play')
+        self.menu_play_button = CreateButton(self.display_surface, (100 * self.settings.width_scale, 200 * self.settings.height_scale), 'Play')
 
-        self.menu_settings_button = CreateButton(self.display_surface, (100, 300), 'Settings')
-        self.settings_full_screen_button = CreateButton(self.display_surface, (100, 200), 'Full Screen')
-        self.settings_back_button = CreateButton(self.display_surface, (100, 300), 'Back')
+        self.menu_settings_button = CreateButton(self.display_surface, (100 * self.settings.width_scale, 300 * self.settings.height_scale), 'Settings')
+        self.settings_full_screen_button = CreateButton(self.display_surface, (100 * self.settings.width_scale, 200 * self.settings.height_scale), 'Full Screen')
+        self.settings_back_button = CreateButton(self.display_surface, (100 * self.settings.width_scale, 300 * self.settings.height_scale), 'Back')
 
 
 
-        self.menu_quit_button = CreateButton(self.display_surface, (100, 400), 'Quit')
+        self.menu_quit_button = CreateButton(self.display_surface, (100 * self.settings.width_scale, 400 * self.settings.height_scale), 'Quit')
 
 
 
         # pause buttons
-        self.pause_resume_button = CreateButton(self.display_surface, (100, 200), 'Resume')
+        self.pause_resume_button = CreateButton(self.display_surface, (100 * self.settings.width_scale, 200 * self.settings.height_scale), 'Resume')
 
-        self.pause_save_button = CreateButton(self.display_surface, (100, 300), 'Save')
+        self.pause_save_button = CreateButton(self.display_surface, (100 * self.settings.width_scale, 300 * self.settings.height_scale), 'Save')
 
-        self.pause_exit_button = CreateButton(self.display_surface, (100, 400), 'Exit')
+        self.pause_exit_button = CreateButton(self.display_surface, (100 * self.settings.width_scale, 400 * self.settings.height_scale), 'Exit')
 
         # Cooldown click button
         self.last_click_time = 0
@@ -48,7 +50,7 @@ class GameManage:
         self.settings_data = self.file.load_file('../save/settings_data.json')
 
         # other
-        self.settings = Settings()
+
 
         self.is_notification = False
 
