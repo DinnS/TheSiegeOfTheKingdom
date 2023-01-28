@@ -83,13 +83,12 @@ class GameManage:
 
     def settings_full_screen(self):
         if self.click_button(self.settings_full_screen_button.button_rect):
-            info_display = pygame.display.Info()
-            display_x = info_display.current_w
-            display_y = info_display.current_h
+
             self.notification = Notification(
                 "You need to restart the game to apply the new settings",
-                (display_x / 2,display_y / 2),
-                self.display_surface
+                (self.settings.current_window_width / 2,self.settings.current_window_height / 2),
+                self.display_surface,
+                (163, 62, 62)
             )
 
             self.is_notification = True
@@ -139,6 +138,14 @@ class GameManage:
         if self.click_button(self.pause_save_button.button_rect):
             self.file.save_file(self.data, '../save/data.json')
 
+            self.notification = Notification(
+                "Game saved",
+                (self.settings.current_window_width / 2, self.settings.current_window_height / 2),
+                self.display_surface
+            )
+
+            self.is_notification = True
+
     def pause_quit(self, game_state) :
         if self.click_button(self.pause_exit_button.button_rect):
             game_state['menu_game'] = True
@@ -184,6 +191,9 @@ class GameManage:
             self.pause_resume(game_state)
             self.pause_save()
             self.pause_quit(game_state)
+
+            if self.is_notification:
+                self.is_notification = self.notification.draw()
 
 
         if game_state['running_game']:

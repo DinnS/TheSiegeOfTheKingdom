@@ -18,6 +18,7 @@ class Game:
             self.display_surface = pygame.display.set_mode((self.settings.window_width, self.settings.window_height))
 
 
+
         pygame.display.set_caption('The Siege of the Kingdom')
         self.clock = pygame.time.Clock()
 
@@ -42,7 +43,6 @@ class Game:
 
         # Init other classes
         self.player = Player((self.data["player_position"]),self.player_group)
-
 
         self.setup()
 

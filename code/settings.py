@@ -12,7 +12,11 @@ class Settings:
         self.window_height = self.settings_data["window_height"]
         self.full_screen = bool(self.settings_data["window_full_screen"])
 
+        # Fix full screen 0,0
+        self.current_window_width = pygame.display.Info().current_w
+        self.current_window_height = pygame.display.Info().current_h
 
+        # Scaling screen
         self.base_width = 1280
         self.base_height = 720
 
