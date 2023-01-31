@@ -39,7 +39,7 @@ class Notification:
         # Center each text
         for i, notification_rect in enumerate(self.notifications_rect):
             notification_rect.centerx = self.surface_rect.center[0]
-            notification_rect.centery = self.surface_rect.midtop[1] +  (i * 60) + (80 * self.settings.height_scale)
+            notification_rect.centery = self.surface_rect.midtop[1] + (60 * self.settings.height_scale) + (i * 60 * self.settings.height_scale)
 
     def check_button(self):
         if self.button_rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:

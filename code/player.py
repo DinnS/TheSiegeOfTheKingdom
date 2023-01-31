@@ -15,9 +15,14 @@ class Player(pygame.sprite.Sprite):
         self.direction = Vector2()
         self.speed = 200
 
+
         # collisions
         #self.hitbox = self.rect.inflate()
 
+        # background size
+        self.background = pygame.image.load('../graphics/map.png')
+        self.background_width = self.background.get_width()
+        self.background_height = self.background.get_height()
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -51,7 +56,26 @@ class Player(pygame.sprite.Sprite):
         self.pos.y += self.direction.y * self.speed * dt
         self.rect.centery = round(self.pos.y)
 
+    def restrict(self):
+        if self.rect.left < 0:
+            self.pos.x = 0 + self.rect.width / 2
+            # self.hitbox.left = 640
+            self.rect.left = 0
+        if self.rect.right > self.background_width:
+            self.pos.x = self.background_width - self.rect.width / 2
+            # self.hitbox.left = 640
+            self.rect.right = self.background_width
+
+        if self.rect.top < 0:
+            self.pos.y = 0 + self.rect.height / 2
+            self.rect.top = 0
+        if self.rect.bottom > self.background_height:
+            self.pos.y = self.background_height - self.rect.height / 2
+            #  self.hitbox.centery = self.rect.centery
+            self.rect.bottom = self.background_height
+
 
     def update(self,dt):
         self.input()
         self.movement(dt)
+        self.restrict()

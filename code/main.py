@@ -6,6 +6,7 @@ from settings import Settings
 from sprite import Sprite
 from player import Player
 from game_manage import GameManage,FileManage
+from camera import CameraGroup
 
 class Game:
     def __init__(self):
@@ -32,7 +33,8 @@ class Game:
 
 
         # Groups
-        self.ground_group = pygame.sprite.Group()
+        self.camera_group = CameraGroup(self.display_surface)
+
         self.player_group = pygame.sprite.GroupSingle()
 
         # Save/load manage
@@ -42,7 +44,7 @@ class Game:
         self.game_manage = GameManage(self.display_surface, self.data)
 
         # Init other classes
-        self.player = Player((self.data["player_position"]),self.player_group)
+        self.player = Player((self.data["player_position"]),[self.player_group, self.camera_group])
 
         self.setup()
 
@@ -53,9 +55,10 @@ class Game:
         tmx_map = load_pygame('../data/map.tmx')
 
         # tiles
-        for x,y,surf in tmx_map.get_layer_by_name('Ground').tiles():
-            Sprite(surf,(x * 64,y * 64),self.ground_group)
-
+        # for x,y,surf in tmx_map.get_layer_by_name('Ground').tiles():
+        #     Sprite(surf,(x * 32,y * 32),self.ground_group)
+        # for obj in  tmx_map.get_layer_by_name('Stone'):
+        #     Sprite(obj.image,(obj.x, obj.y), self.ground_group)
 
     def run(self):
         while True:
@@ -71,8 +74,10 @@ class Game:
             # state game
             if self.state['running_game']:
                 # draw display
-                self.ground_group.draw(self.display_surface)
-                self.player_group.draw(self.display_surface)
+                #self.ground_group.draw(self.display_surface)
+                #self.player_group.draw(self.display_surface)
+
+                self.camera_group.custom_draw(self.player)
 
                 # update
                 self.player_group.update(self.dt)
